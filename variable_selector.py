@@ -88,11 +88,11 @@ def append_string_to_file(filename: str, data_string: str):
     with open(filename, 'a') as file:
         file.write(data_string + '\n')
 
-def variable_selection_to_txt(chunk, current_key_int):
+def variable_selection_to_txt(chunk, api_key):
 
 
     # Initialize OpenAI client with the current API key
-    client = OpenAI(api_key=api_keys[current_key_int])
+    client = OpenAI(api_key=api_key)
 
     try:
         # Process the chunk
@@ -105,8 +105,7 @@ def variable_selection_to_txt(chunk, current_key_int):
 
 data_path = "Data_Dictionary_Showcase.csv"
 txt_filename = "variable_selection_output.txt"
-current_key_int = 0  # Starting index for API keys
-api_keys = ["YOUR_API_KEY"]
+api_key = "YOUR_API_KEY"
 chunks = read_csv_and_split_into_chunks(data_path)
 # print(chunks[4])
 # Iterate over each chunk and process it
@@ -115,14 +114,10 @@ current_chunk = 0
 for chunk in chunks:
     print("Current Chunk: " + str(current_chunk))
     try:
-        variable_selection_string = variable_selection_to_txt(chunk, current_key_int)
+        variable_selection_string = variable_selection_to_txt(chunk, api_key)
         # print(variable_selection_string)
         append_string_to_file(txt_filename, variable_selection_string)
         current_chunk += 1
     except Exception as e:
         print(f"An error occurred: {e}")
-        # Handle API key rotation if rate limit is reached
-        current_key_int += 1
-        if current_key_int >= len(api_keys):
-            print("All API keys have reached their limit.")
         # break
